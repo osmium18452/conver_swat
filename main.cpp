@@ -1,7 +1,9 @@
 #include <torch/torch.h>
 #include <iostream>
 #include <string>
+#include "headers/ProgressBar.h"
 #define ULL unsigned long long
+
 
 using std::cout;
 using std::endl;
@@ -13,8 +15,7 @@ ULL sizeof_tensor(const torch::Tensor& tensor) {
 
 int main() {
 #ifdef _WIN32
-    const std::string data_root = R"(C:\Users\17110\Desktop\causal ad\ts.dataset\swat\)";
-//    const std::string data_root=R"(E:\Pycharm Projects\causal.dataset\data\swat\)";
+    const std::string data_root=R"(E:\Pycharm Projects\causal.dataset\data\swat\)";
 #else
     const std::string data_root=R"(/remote-home/liuwenbo/pycproj/tsdata/data/swat/)";
 #endif
@@ -31,6 +32,8 @@ int main() {
     torch::Tensor label_set = torch::zeros({label_row, 1});
     std::ifstream train_file_stream;
     train_file_stream.open(data_root + train_set_file);
+    ProgressBar pbar(train_set_row);
+    return 0;
     for (auto i = 0; i < train_set_row; i++) {
         for (auto j = 0; j < sensor_num; j++) {
             float data;
