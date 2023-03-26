@@ -6,6 +6,10 @@ using std::cout;
 using std::endl;
 using std::cin;
 
+int sizeof_tensor(const torch::Tensor& tensor) {
+    return tensor.numel() * torch::elementSize(torch::typeMetaToScalarType(tensor.dtype()));
+}
+
 int main() {
 #ifdef _WIN32
     const std::string data_root = R"(C:\Users\17110\Desktop\causal ad\ts.dataset\swat\)";
@@ -34,6 +38,6 @@ int main() {
         }
     }
     cout << torch::max(train_set).item<float>() << endl << torch::min(train_set).item<float>() << endl;
-    cout<<sizeof (train_set)<<endl;
+    cout<<sizeof_tensor(train_set)<<endl;
     return 0;
 }
