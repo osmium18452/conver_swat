@@ -1,12 +1,13 @@
 #include <torch/torch.h>
 #include <iostream>
 #include <string>
+#define ULL unsigned long long
 
 using std::cout;
 using std::endl;
 using std::cin;
 
-int sizeof_tensor(const torch::Tensor& tensor) {
+ULL sizeof_tensor(const torch::Tensor& tensor) {
     return tensor.numel() * torch::elementSize(torch::typeMetaToScalarType(tensor.dtype()));
 }
 
