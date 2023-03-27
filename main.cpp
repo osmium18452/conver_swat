@@ -10,6 +10,17 @@ ULL sizeof_tensor(const torch::Tensor &tensor) {
     return tensor.numel() * torch::elementSize(torch::typeMetaToScalarType(tensor.dtype()));
 }
 
+ULL *load_csv_data() {
+    double *train_set = nullptr;
+    double *test_set = nullptr;
+    double *label_set = nullptr;
+    ULL *ret = (ULL *) malloc(3 * sizeof(ULL));
+    memcpy(ret, &train_set, sizeof(ULL));
+    memcpy(ret + 1, &test_set, sizeof(ULL));
+    memcpy(ret + 2, &label_set, sizeof(ULL));
+    return ret;
+}
+
 int main() {
 #ifdef _WIN32
     const std::string data_root = R"(E:\Pycharm Projects\causal.dataset\data\swat\)";
@@ -23,9 +34,6 @@ int main() {
     const int train_set_row = 496800;
     const int test_set_row = 449919;
     const int label_row = 449919;
-//    torch::Tensor train_set = torch::zeros({train_set_row, sensor_num});
-//    torch::Tensor test_set = torch::zeros({test_set_row, sensor_num});
-//    torch::Tensor label_set = torch::zeros({label_row, 1});
     std::cout << data_root + train_set_file << std::endl;
     std::ifstream train_file_stream;
     std::ifstream test_file_stream;
@@ -67,7 +75,7 @@ int main() {
     torch::Tensor train_set_tensor = torch::from_blob(train_set, {train_set_row, sensor_num}, torch::kFloat64);
     torch::Tensor test_set_tensor = torch::from_blob(test_set, {test_set_row, sensor_num}, torch::kFloat64);
     torch::Tensor label_set_tensor = torch::from_blob(label_set, {label_row, 1}, torch::kFloat64);
-    std::cout << train_set_tensor.sizes() << std::endl;
+/*    std::cout << train_set_tensor.sizes() << std::endl;
     std::cout << torch::max(train_set_tensor).item<double>() << " " << torch::min(train_set_tensor).item<double>()
               << std::endl;
     std::cout<<test_set_tensor.sizes()<<std::endl;
@@ -75,6 +83,15 @@ int main() {
               << std::endl;
     std::cout<<label_set_tensor.sizes()<<std::endl;
     std::cout << torch::max(label_set_tensor).item<double>() << " " << torch::min(label_set_tensor).item<double>()
-              << std::endl;
+              << std::endl;*/
+    std::ofstream train_set_output_file(data_root + "swat_train_set.pt", std::ios::binary | std::ios::out);
+    std::ofstream test_set_output_file(data_root + "swat_test_set.pt", std::ios::binary | std::ios::out);
+    std::ofstream label_set_output_file(data_root + "swat_label_set.pt", std::ios::binary | std::ios::out);
+    train_set_output_file.write((char *) train_set, train_set_row * sensor_num * sizeof(double));
+    test_set_output_file.write((char *) test_set, test_set_row * sensor_num * sizeof(double));
+    label_set_output_file.write((char *) label_set, label_row * sizeof(double));
+    train_set_output_file.close();
+    test_set_output_file.close();
+    label_set_output_file.close();
     return 0;
 }
