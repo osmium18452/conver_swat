@@ -5,41 +5,46 @@
 #include "../headers/ProgressBar.h"
 #include <iostream>
 #include <string>
-#include <cstdlib>
+#include <algorithm>
+#include <utility>
 
 #ifdef _WIN32
+
 #include <Windows.h>
+
 #else
 #include <sys/ioctl.h>
 #include <unistd.h>
 #endif
 
-std::string int_to_string(int a){
+std::string int_to_string(int a) {
     std::string buffer;
-    if (a==0) return "0";
-    while (a){
-        buffer.push_back(a%10+'0');
-        a/=10;
+    if (a == 0) return "0";
+    while (a) {
+        buffer.push_back(a % 10 + '0');
+        a /= 10;
     }
+    std::reverse(buffer.begin(), buffer.end());
     return buffer;
 }
 
 
 ProgressBar::ProgressBar(int total) {
     total_iters = total;
-    current_iters=0;
+    current_iters = 0;
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     int columns, rows;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-    window_width=columns;
+    window_width = columns;
 #else
     struct winsize w;
     ioctl(fileno(stdout), TIOCGWINSZ, &w);
     window_width = (int)(w.ws_col);
 #endif
-    std::cout<<"window width: "<<window_width<<std::endl;
+    std::cout << "window width: " << window_width << std::endl;
+    last_epoch_time = time(nullptr);
 }
 
 void ProgressBar::update() {
@@ -48,27 +53,44 @@ void ProgressBar::update() {
 }
 
 void ProgressBar::update(int iters) {
-    current_iters+=iters;
+    current_iters += iters;
     display();
 }
 
 void ProgressBar::display() {
     std::string output;
     std::string epoch_display;
-    epoch_display+= int_to_string(current_iters)+"/"+int_to_string(total_iters);
-    auto progress_bar_length=window_width-prefix.length()-postfix.length()-epoch_display.length()-6;
-    output+="\r["+prefix+"]|";
+    std::string echo_prefix;
+//    time_t current_time=time(nullptr);
+    if (prefix.empty()) {
+        echo_prefix = prefix + "epoch: ";
+    } else {
+        echo_prefix = prefix + " epoch: ";
+    }
+    epoch_display += std::to_string(current_iters) + "/" + std::to_string(total_iters);
+    auto progress_bar_length = window_width - echo_prefix.length() - postfix.length() - epoch_display.length() - 6;
+    output += "\r[" + echo_prefix + epoch_display + "]|";
     for (auto i = 0; i < progress_bar_length; i++) {
-        if (i<progress_bar_length*current_iters/total_iters){
-            output+="=";
-        } else{
-            output+=" ";
+        if (i < progress_bar_length * current_iters / total_iters) {
+            output += "=";
+        } else if(i == progress_bar_length * current_iters / total_iters) {
+            output += ">";
+        } else {
+            output += " ";
         }
     }
-    output+="|["+postfix+"]";
-    std::cout<<output<<std::endl;
+    output += "|[" + postfix + "]";
+    std::cout << output << std::flush;
 }
 
 void ProgressBar::display_daemon() {
 
+}
+
+void ProgressBar::set_prefix(std::string prefix_str) {
+    this->prefix = std::move(prefix_str);
+}
+
+void ProgressBar::set_postfix(std::string postfix_str) {
+    this->postfix = std::move(postfix_str);
 }
