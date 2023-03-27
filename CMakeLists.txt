@@ -3,7 +3,7 @@ set(PROJ_NAME convert_swat)
 project(${PROJ_NAME} CXX)
 
 set(CMAKE_CXX_STANDARD 14)
-if (DEFINED $ENV{C_IDENTIFIER})
+if ($ENV{C_IDENTIFIER} MATCHES PC)
     set(CMAKE_PREFIX_PATH D:\\libtorch)
 else ()
     if (MSVC)
