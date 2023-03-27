@@ -53,6 +53,7 @@ int main() {
         pbar.set_postfix(std::to_string(*(train_set + i * sensor_num)));
         pbar.update();
     }
+    pbar.close();
     train_file_stream.close();
     ProgressBar pbar2(test_set_row);
     pbar2.set_prefix("Loading test set");
@@ -64,6 +65,7 @@ int main() {
         pbar2.update();
     }
     test_file_stream.close();
+    pbar2.close();
     ProgressBar pbar3(label_row);
     pbar3.set_prefix("Loading label set");
     for (auto i = 0; i < label_row; i++) {
@@ -72,6 +74,7 @@ int main() {
         pbar3.update();
     }
     label_file_stream.close();
+    pbar3.close();
     torch::Tensor train_set_tensor = torch::from_blob(train_set, {train_set_row, sensor_num}, torch::kFloat64);
     torch::Tensor test_set_tensor = torch::from_blob(test_set, {test_set_row, sensor_num}, torch::kFloat64);
     torch::Tensor label_set_tensor = torch::from_blob(label_set, {label_row, 1}, torch::kFloat64);

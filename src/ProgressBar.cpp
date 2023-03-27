@@ -43,7 +43,7 @@ ProgressBar::ProgressBar(int total) {
     ioctl(fileno(stdout), TIOCGWINSZ, &w);
     window_width = (int)(w.ws_col);
 #endif
-//    std::cout << "window width: " << window_width << std::endl;
+    std::cout << "window width: " << window_width << std::endl;
     last_epoch_time = time(nullptr);
 }
 
@@ -68,12 +68,12 @@ void ProgressBar::display() {
         echo_prefix = prefix + " epoch: ";
     }
     epoch_display += std::to_string(current_iters) + "/" + std::to_string(total_iters);
-    auto progress_bar_length = window_width - echo_prefix.length() - postfix.length() - epoch_display.length() - 6;
+    auto progress_bar_length = window_width - echo_prefix.length() - postfix.length() - epoch_display.length() - 7;
     output += "\r[" + echo_prefix + epoch_display + "]|";
     for (auto i = 0; i < progress_bar_length; i++) {
         if (i < progress_bar_length * current_iters / total_iters) {
             output += "=";
-        } else if(i == progress_bar_length * current_iters / total_iters) {
+        } else if (i == progress_bar_length * current_iters / total_iters) {
             output += ">";
         } else {
             output += " ";
@@ -93,4 +93,9 @@ void ProgressBar::set_prefix(std::string prefix_str) {
 
 void ProgressBar::set_postfix(std::string postfix_str) {
     this->postfix = std::move(postfix_str);
+}
+
+void ProgressBar::close() {
+    std::cout << std::endl;
+    ProgressBar::~ProgressBar();
 }

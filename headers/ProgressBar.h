@@ -25,11 +25,12 @@ private:
 
 public:
     explicit ProgressBar(int total);
-    ~ProgressBar() = default;
+    ~ProgressBar()=default ;
 
     void update(int iters);
 
     void update();
+    void close();
     void set_prefix(std::string prefix_str);
     void set_postfix(std::string postfix_str);
 };
