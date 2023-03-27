@@ -34,13 +34,13 @@ int main() {
     const int train_set_row = 496800;
     const int test_set_row = 449919;
     const int label_row = 449919;
+    auto train_set = (double *) malloc(train_set_row * sensor_num * sizeof(double));
+    auto test_set = (double *) malloc(test_set_row * sensor_num * sizeof(double));
+    auto label_set = (double *) malloc(label_row * sizeof(double));
     std::cout << data_root + train_set_file << std::endl;
     std::ifstream train_file_stream;
     std::ifstream test_file_stream;
     std::ifstream label_file_stream;
-    auto train_set = (double *) malloc(train_set_row * sensor_num * sizeof(double));
-    auto test_set = (double *) malloc(test_set_row * sensor_num * sizeof(double));
-    auto label_set = (double *) malloc(label_row * sizeof(double));
     train_file_stream.open(data_root + train_set_file);
     test_file_stream.open(data_root + test_set_file);
     label_file_stream.open(data_root + label_file);
@@ -75,15 +75,15 @@ int main() {
     torch::Tensor train_set_tensor = torch::from_blob(train_set, {train_set_row, sensor_num}, torch::kFloat64);
     torch::Tensor test_set_tensor = torch::from_blob(test_set, {test_set_row, sensor_num}, torch::kFloat64);
     torch::Tensor label_set_tensor = torch::from_blob(label_set, {label_row, 1}, torch::kFloat64);
-/*    std::cout << train_set_tensor.sizes() << std::endl;
-    std::cout << torch::max(train_set_tensor).item<double>() << " " << torch::min(train_set_tensor).item<double>()
-              << std::endl;
-    std::cout<<test_set_tensor.sizes()<<std::endl;
-    std::cout << torch::max(test_set_tensor).item<double>() << " " << torch::min(test_set_tensor).item<double>()
-              << std::endl;
-    std::cout<<label_set_tensor.sizes()<<std::endl;
-    std::cout << torch::max(label_set_tensor).item<double>() << " " << torch::min(label_set_tensor).item<double>()
-              << std::endl;*/
+    std::cout << "train set size: " << train_set_tensor.sizes() << std::endl;
+    std::cout << "train set max and min: " << torch::max(train_set_tensor).item<double>() << " "
+              << torch::min(train_set_tensor).item<double>() << std::endl;
+    std::cout << "test set size: " << test_set_tensor.sizes() << std::endl;
+    std::cout << "test set max and min: " << torch::max(test_set_tensor).item<double>() << " "
+              << torch::min(test_set_tensor).item<double>() << std::endl;
+    std::cout << "label set size: " << label_set_tensor.sizes() << std::endl;
+    std::cout << "label set max and min: " << torch::max(label_set_tensor).item<double>() << " "
+              << torch::min(label_set_tensor).item<double>() << std::endl;
     std::ofstream train_set_output_file(data_root + "swat_train_set.pt", std::ios::binary | std::ios::out);
     std::ofstream test_set_output_file(data_root + "swat_test_set.pt", std::ios::binary | std::ios::out);
     std::ofstream label_set_output_file(data_root + "swat_label_set.pt", std::ios::binary | std::ios::out);

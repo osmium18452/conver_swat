@@ -43,7 +43,7 @@ ProgressBar::ProgressBar(int total) {
     ioctl(fileno(stdout), TIOCGWINSZ, &w);
     window_width = (int)(w.ws_col);
 #endif
-    std::cout << "window width: " << window_width << std::endl;
+//    std::cout << "window width: " << window_width << std::endl;
     last_epoch_time = time(nullptr);
 }
 
