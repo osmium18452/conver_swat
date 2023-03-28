@@ -93,8 +93,12 @@ int main() {
     train_set_output_file.write((char *) train_set, train_set_row * sensor_num * sizeof(double));
     test_set_output_file.write((char *) test_set, test_set_row * sensor_num * sizeof(double));
     label_set_output_file.write((char *) label_set, label_row * sizeof(double));
+//    std::cout<<"hello"<<std::endl;
     train_set_output_file.close();
+//    std::cout<<'1'<<std::endl;
     test_set_output_file.close();
+//    std::cout<<'2'<<std::endl;
     label_set_output_file.close();
+//    std::cout<<'3'<<std::endl;
     return 0;
 }

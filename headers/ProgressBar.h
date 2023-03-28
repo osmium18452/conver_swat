@@ -16,8 +16,7 @@ private:
     int window_width;
     std::string prefix;
     std::string postfix;
-    time_t last_epoch_time;
-
+    bool leave=true;
 
     void display_daemon();
 
@@ -25,6 +24,7 @@ private:
 
 public:
     explicit ProgressBar(int total);
+    ProgressBar(int total,bool leave);
     ~ProgressBar()=default ;
 
     void update(int iters);

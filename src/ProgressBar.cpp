@@ -43,8 +43,7 @@ ProgressBar::ProgressBar(int total) {
     ioctl(fileno(stdout), TIOCGWINSZ, &w);
     window_width = (int)(w.ws_col);
 #endif
-    std::cout << "window width: " << window_width << std::endl;
-    last_epoch_time = time(nullptr);
+//    std::cout << "window width: " << window_width << std::endl;
 }
 
 void ProgressBar::update() {
@@ -96,6 +95,13 @@ void ProgressBar::set_postfix(std::string postfix_str) {
 }
 
 void ProgressBar::close() {
-    std::cout << std::endl;
-    ProgressBar::~ProgressBar();
+    if (leave) {
+        std::cout << std::endl;
+        return;
+    }
+    this->~ProgressBar();
+}
+
+ProgressBar::ProgressBar(int total, bool leave) : ProgressBar(total) {
+    this->leave = leave;
 }
