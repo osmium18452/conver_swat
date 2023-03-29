@@ -62,9 +62,9 @@ void ProgressBar::display() {
     std::string echo_prefix;
 //    time_t current_time=time(nullptr);
     if (prefix.empty()) {
-        echo_prefix = prefix + "epoch: ";
+        echo_prefix = prefix + "iter: ";
     } else {
-        echo_prefix = prefix + " epoch: ";
+        echo_prefix = prefix + " iter: ";
     }
     epoch_display += std::to_string(current_iters) + "/" + std::to_string(total_iters);
     auto progress_bar_length = window_width - echo_prefix.length() - postfix.length() - epoch_display.length() - 7;
@@ -77,6 +77,7 @@ void ProgressBar::display() {
         } else {
             output += " ";
         }
+
     }
     output += "|[" + postfix + "]";
     std::cout << output << std::flush;
